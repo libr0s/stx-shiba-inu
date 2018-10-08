@@ -1,4 +1,4 @@
-# Animals
+<center><h1>Animals</h1></center>
 
 React app written for STX workshops
 
