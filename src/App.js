@@ -1,6 +1,8 @@
-import React, { Component } from 'react';
-import './App.css';
-import ShibaForm from "./components/ShibaForm";
+import React, {Component} from 'react';
+import ShibaForm, {animalTypes} from "./components/ShibaForm";
+import {ShibaList} from "./components/ShibaList";
+const axios = require('axios');
+const corsBypass = 'https://cors-anywhere.herokuapp.com/';
 
 class App extends Component {
 
@@ -8,19 +10,23 @@ class App extends Component {
     count: 0,
     type: 'random',
     buttonState: '',
+    animals: [],
   };
 
   render() {
     return (
       <div>
-          <ShibaForm
-            handleChangeCount={this.handleChangeCount}
-            handleChangeType={this.handleChangeType}
-            handleSubmit={this.handleSubmit}
-            typeValue={this.state.type}
-            countValue={this.state.count}
-            isFetching={this.state.buttonState}
-          />
+        <ShibaForm
+          handleChangeCount={this.handleChangeCount}
+          handleChangeType={this.handleChangeType}
+          handleSubmit={this.handleSubmit}
+          typeValue={this.state.type}
+          countValue={this.state.count}
+          buttonState={this.state.buttonState}
+        />
+        <ShibaList
+          animals={this.state.animals}
+        />
       </div>
     );
   }
@@ -36,7 +42,34 @@ class App extends Component {
   };
 
   handleSubmit = () => {
-    console.log(this.state);
+    let type = this.state.type;
+    if (type === 'random') {
+      type = animalTypes[Math.floor(Math.random() * 3)];
+    }
+
+    let count = this.state.count;
+    if (count < 1 || count > 10) {
+      count = 1;
+    }
+
+    this.setState({type, count}, this.fetchAnimals(type, count));
+  };
+
+  fetchAnimals = (type, count) => {
+    axios.get(`${corsBypass}http://shibe.online/api/${type}?count=${count}`)
+      .then((response) => {
+        this.setState({
+          animals: response.data,
+          buttonState: 'success',
+        }, () => setTimeout(() => this.setState({buttonState: ''}), 500));
+      })
+      .catch((error) => {
+        console.log(error);
+        this.setState({
+          animals: [],
+          buttonState: 'error',
+        });
+      }, () => setTimeout(() => this.setState({buttonState: ''}), 500));
   }
 
 }

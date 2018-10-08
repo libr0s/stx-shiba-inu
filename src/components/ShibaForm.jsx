@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import ProgressButton from "react-progress-button";
-import "react-progress-button.css";
 
-const animalTypes = ['shibes', 'cats', 'birds', 'random'];
+export const animalTypes = ['shibes', 'cats', 'birds'];
 
 class ShibaForm extends Component {
   render() {
@@ -30,7 +29,7 @@ class ShibaForm extends Component {
                   onChange={this.props.handleChangeType}
                   value={this.props.typeValue}
                 >
-                  { animalTypes.map((val, index) => <option key={index}>{ val }</option>) }
+                  { animalTypes.concat('random').map((val, index) => <option key={index}>{ val }</option>) }
                 </select>
               </div>
             </div>
@@ -38,11 +37,16 @@ class ShibaForm extends Component {
         </div>
         <div className="columns is-centered">
           <div className="has-text-centered column is-one-quarter">
-            <ProgressButton onClick={this.props.handleSubmit} state={this.props.buttonState}>
-              Get some <em>{this.props.typeValue}</em>
+            <ProgressButton
+              onClick={this.props.handleSubmit}
+              state={this.props.buttonState}
+            >
+              Animals, please
             </ProgressButton>
           </div>
         </div>
+        {JSON.stringify(this.props)}
+        {JSON.stringify(this.props.animals)}
       </div>
     );
   }
